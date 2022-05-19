@@ -1,5 +1,5 @@
 services:
-  - name: sample-expressjs:0.3.2
+  - name: sample-expressjs:0.3.4
     description: preview of sample app
     run: node index.js
     port: [ '8080:8080' ]
