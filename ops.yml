@@ -14,6 +14,7 @@ services:
         - SLACK_SIGNING_SECRET
         - SLACK_BOT_TOKEN
     events:
+     - "github:workflows-sh/sample-expressjs:pull_request.opened"
      - "github:workflows-sh/sample-expressjs:pull_request.synchronize"
     trigger:
      - build
