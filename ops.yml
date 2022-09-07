@@ -1,54 +1,64 @@
-services:
-  - name: sample-expressjs:0.3.4
-    description: preview of sample app
-    run: node index.js
-    port: [ '8080:8080' ]
-    domain: ""
-    env:
-      static:
-        - PORT=8080
-        - DB_HOST=localhost
-        - DB_PORT=3600
-        - DB_USER=fake
-      secrets:
-        - SLACK_SIGNING_SECRET
-        - SLACK_BOT_TOKEN
-    events:
-     - "github:workflows-sh/sample-expressjs:pull_request.opened"
-     - "github:workflows-sh/sample-expressjs:pull_request.synchronize"
-    trigger:
-     - build
-     - publish
-     - start
+version: "1"
+# services:
+#   - name: sample-expressjs-service-do-k8s-cdktf:0.1.0
+#     description: Preview of image built by the pipeline
+#     run: node index.js
+#     port: [ '8080:8080' ]
+#     domain: ""
+#     env:
+#       static:
+#         - PORT=8080
+#         - DB_HOST=localhost
+#         - DB_PORT=3600
+#         - DB_USER=fake
+#       secrets:
+#         - SLACK_SIGNING_SECRET
+#         - SLACK_BOT_TOKEN
+#     events:
+#      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
+#      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
+#     trigger:
+#      - build
+#      - publish
+#      - start
 pipelines:
-  - name: sample-app-pipeline:0.1.0
-    description: build a release for deployment on fargate
+  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.0
+    description: Build and Publish an image in a DigitalOcean Container Registry
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
+        - STACK_TYPE=do-k8s-cdktf
+        - ORG=workflows-sh
+        - REPO=sample-expressjs-do-k8s-cdktf
+        - REF=main
+        - BIN_LOCATION=/tmp/tools
       secrets:
         - GITHUB_TOKEN
-        - AWS_ACCESS_KEY_ID
-        - AWS_SECRET_ACCESS_KEY
-        - AWS_ACCOUNT_NUMBER
+        - DO_TOKEN
     events:
-      - "github:kc-dot-io/sample-app:pull_request.merged" 
-      - "github:kc-dot-io/sample-app:create.tag" 
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
     jobs:
-      - name: sample-app-build-job
-        description: example build step
+      - name: sample-expressjs-build-do-k8s-cdktf
+        description: Build step for sample-expressjs-do-k8s-cdktf
         packages:
           - git
           - unzip
-          - python
+          - wget
+          - tar
         steps:
-          - curl https://s3.amazonaws.com/aws-cli/awscli-bundle-1.18.200.zip -o awscli-bundle.zip
-          - unzip awscli-bundle.zip && ./awscli-bundle/install -b ~/bin/aws
-          - export PATH=~/bin:$PATH
-          - aws --version
-          - git clone https://$GITHUB_TOKEN:x-oauth-basic@github.com/$ORG/$REPO
-          - cd $REPO && ls -asl
-          - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/$REPO
-          - docker build -t $AWS_ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/$REPO:$REF .
-          - docker push $AWS_ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/$REPO:$REF
+          - mkdir -p $BIN_LOCATION
+          - export PATH=$PATH:$BIN_LOCATION
+          - ls -asl $BIN_LOCATION
+          - DOCTL_DL_URL='https://github.com/digitalocean/doctl/releases/download/v1.79.0/doctl-1.79.0-linux-amd64.tar.gz' # Update to latest doctl binary here by providing URL
+          - wget $DOCTL_DL_URL -O doctl.tar.gz
+          - tar xf doctl.tar.gz -C $BIN_LOCATION
+          - doctl version
+          - git version
+          - git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/$ORG/$REPO && cd $REPO
+          - git fetch && git checkout $REF
+          - doctl auth init -t $DO_TOKEN
+          - doctl registry login
+          - docker build -f Dockerfile -t registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF .
+          # - docker push registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF
 
