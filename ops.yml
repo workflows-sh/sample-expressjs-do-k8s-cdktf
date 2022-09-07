@@ -1,26 +1,26 @@
 version: "1"
-# services:
-#   - name: sample-expressjs-service-do-k8s-cdktf:0.1.0
-#     description: Preview of image built by the pipeline
-#     run: node index.js
-#     port: [ '8080:8080' ]
-#     domain: ""
-#     env:
-#       static:
-#         - PORT=8080
-#         - DB_HOST=localhost
-#         - DB_PORT=3600
-#         - DB_USER=fake
-#       secrets:
-#         - SLACK_SIGNING_SECRET
-#         - SLACK_BOT_TOKEN
-#     events:
-#      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
-#      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
-#     trigger:
-#      - build
-#      - publish
-#      - start
+services:
+  - name: sample-expressjs-service-do-k8s-cdktf:0.1.0
+    description: Preview of image built by the pipeline
+    run: node index.js
+    port: [ '8080:8080' ]
+    domain: ""
+    env:
+      static:
+        - PORT=8080
+        - DB_HOST=localhost
+        - DB_PORT=3600
+        - DB_USER=fake
+      secrets:
+        - SLACK_SIGNING_SECRET
+        - SLACK_BOT_TOKEN
+    events:
+     - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
+     - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
+    trigger:
+     - build
+     - publish
+     - start
 pipelines:
   - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.0
     description: Build and Publish an image in a DigitalOcean Container Registry
