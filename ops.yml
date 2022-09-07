@@ -60,5 +60,5 @@ pipelines:
           - doctl auth init -t $DO_TOKEN
           - doctl registry login
           - docker build -f Dockerfile -t registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF .
-          # - docker push registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF
+          - docker push registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF
 
