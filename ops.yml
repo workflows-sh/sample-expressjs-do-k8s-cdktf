@@ -15,12 +15,14 @@ services:
         - SLACK_SIGNING_SECRET
         - SLACK_BOT_TOKEN
     events:
-     - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
-     - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.reopened"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.synchronize"
     trigger:
-     - build
-     - publish
-     - start
+      - build
+      - publish
+      - start
 pipelines:
   - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.2
     description: Build and Publish an image in a DigitalOcean Container Registry
@@ -37,7 +39,9 @@ pipelines:
         - DO_TOKEN
     events:
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.reopened"
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.synchronize"
     jobs:
       - name: sample-expressjs-build-do-k8s-cdktf
         description: Build step for sample-expressjs-do-k8s-cdktf
@@ -56,11 +60,11 @@ pipelines:
           - doctl version
           - git version
           - git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/$ORG/$REPO && cd $REPO
-          - git fetch && git checkout $REF
+          - git fetch && git checkout "${REF}"
           - doctl auth init -t $DO_TOKEN
           - doctl registry login
-          - docker build -f Dockerfile -t $REGISTRY_BASE/sample-expressjs-do-k8s:$REF .
-          - docker push $REGISTRY_BASE/sample-expressjs-do-k8s:$REF
+          - docker build -f Dockerfile -t $REGISTRY_BASE/sample-expressjs-do-k8s:"${REF}" .
+          - docker push $REGISTRY_BASE/sample-expressjs-do-k8s:"${REF}"
           # - docker build -f Dockerfile -t registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF .
           # - docker push registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF
 
