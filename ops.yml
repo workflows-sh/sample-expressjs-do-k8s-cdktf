@@ -23,7 +23,7 @@ services:
       - publish
       - start
 pipelines:
-  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.4
+  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.5
     description: Build and Publish an image in a DigitalOcean Container Registry
     env:
       static:
@@ -61,8 +61,8 @@ pipelines:
           - git fetch && git checkout "${REF}"
           - doctl auth init -t $DO_TOKEN
           - doctl registry login
-          - docker build -f Dockerfile -t $REGISTRY_BASE/sample-expressjs-do-k8s:"${REF}" .
-          - docker push $REGISTRY_BASE/sample-expressjs-do-k8s:"${REF}"
+          - CLEAN_REF=$(echo "${REF}" | sed 's/[^a-zA-Z0-9]/-/g' )
+          - docker build -f Dockerfile -t $REGISTRY_BASE/sample-expressjs-do-k8s:"${CLEAN_REF}" .
+          - docker push $REGISTRY_BASE/sample-expressjs-do-k8s:"${CLEAN_REF}"
           # - docker build -f Dockerfile -t registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF .
           # - docker push registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF
-
