@@ -1,6 +1,6 @@
 version: "1"
 services:
-  - name: sample-expressjs-service-do-k8s-cdktf:0.1.0
+  - name: sample-expressjs-service-do-k8s-cdktf:0.1.2
     description: Preview of image built by the pipeline
     run: node index.js
     port: [ '8080:8080' ]
@@ -17,14 +17,13 @@ services:
     events:
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.reopened"
-      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.synchronize"
     trigger:
       - build
       - publish
       - start
 pipelines:
-  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.2
+  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.4
     description: Build and Publish an image in a DigitalOcean Container Registry
     env:
       static:
@@ -40,7 +39,6 @@ pipelines:
     events:
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.reopened"
-      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.synchronize"
     jobs:
       - name: sample-expressjs-build-do-k8s-cdktf
