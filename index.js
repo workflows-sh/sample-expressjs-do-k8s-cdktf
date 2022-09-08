@@ -7,8 +7,11 @@ const HOST = '0.0.0.0'
 console.log(process.env)
 
 const api = express()
+
+api.use(express.static('v2'));
+
 api.get('/', (req, res) => {
-  res.send('PROD-2022-04\n')
+  res.sendFile('v2/index.html',{root: '.'});
 })
 
 api.listen(PORT, HOST)
