@@ -1,17 +1,21 @@
 const express = require('express')
-const mysql = require('mysql')
+var path = require('path');
 
 const PORT = process.env.PORT || 3000
 const HOST = '0.0.0.0'
 
-console.log(process.env)
+// Update RELEASE_NO below for Demos
+const RELEASE_NO = 'PROD-2022-272'
 
 const api = express()
-
-api.use(express.static('v2'));
+api.set('views', path.join(__dirname, 'views'));
+api.set('view engine', 'pug');
+api.use(express.static(path.join(__dirname, 'public')));
 
 api.get('/', (req, res) => {
-  res.sendFile('v2/index.html',{root: '.'});
+  res.render('index', {
+    release_no: RELEASE_NO
+  })
 })
 
 api.listen(PORT, HOST)

@@ -23,13 +23,14 @@ services:
       - publish
       - start
 pipelines:
-  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.1.5
+  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.2.1
     description: Build and Publish an image in a DigitalOcean Container Registry
     env:
       static:
         - DEBIAN_FRONTEND=noninteractive
         - STACK_TYPE=do-k8s-cdktf
-        - ORG=workflows-sh
+        - ORG=cto-ai
+        - GH_ORG=workflows-sh
         - REPO=sample-expressjs-do-k8s-cdktf
         - BIN_LOCATION=/tmp/tools
         - REGISTRY_BASE=registry.digitalocean.com/cto-ai
@@ -57,12 +58,11 @@ pipelines:
           - tar xf doctl.tar.gz -C $BIN_LOCATION
           - doctl version
           - git version
-          - git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/$ORG/$REPO && cd $REPO
-          - git fetch && git checkout "${REF}"
+          - git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/$GH_ORG/$REPO && cd $REPO
+          - git fetch -a && git checkout "${REF}"
           - doctl auth init -t $DO_TOKEN
           - doctl registry login
           - CLEAN_REF=$(echo "${REF}" | sed 's/[^a-zA-Z0-9]/-/g' )
-          - docker build -f Dockerfile -t $REGISTRY_BASE/sample-expressjs-do-k8s:"${CLEAN_REF}" .
-          - docker push $REGISTRY_BASE/sample-expressjs-do-k8s:"${CLEAN_REF}"
-          # - docker build -f Dockerfile -t registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF .
-          # - docker push registry.digitalocean.com/$ORG/$REPO-$STACK_TYPE:$REF
+          - docker build -f Dockerfile -t one-img-to-rule-them-all:latest .
+          - docker tag one-img-to-rule-them-all:latest registry.digitalocean.com/$ORG/$REPO:$REF
+          - docker push registry.digitalocean.com/$ORG/$REPO:$REF
