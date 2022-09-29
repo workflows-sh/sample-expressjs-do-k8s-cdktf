@@ -2,7 +2,7 @@ version: "1"
 services:
   - name: sample-expressjs-service-do-k8s-cdktf:0.1.2
     description: Preview of image built by the pipeline
-    run: node index.js
+    run: node /ops/index.js
     port: [ '8080:8080' ]
     domain: ""
     env:
@@ -33,7 +33,6 @@ pipelines:
         - GH_ORG=workflows-sh
         - REPO=sample-expressjs-do-k8s-cdktf
         - BIN_LOCATION=/tmp/tools
-        - REGISTRY_BASE=registry.digitalocean.com/cto-ai
       secrets:
         - GITHUB_TOKEN
         - DO_TOKEN
