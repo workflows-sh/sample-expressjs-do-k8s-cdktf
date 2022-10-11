@@ -1,13 +1,9 @@
 FROM registry.cto.ai/official_images/node:2-12.13.1-stretch-slim
 
 WORKDIR /ops
+USER ops
 
-COPY package.json ./
-COPY yarn.lock ./
-
-RUN yarn install
-
-ADD . .
+ADD --chown=ops:9999 . .
+RUN npm install
 
 EXPOSE 3000
-CMD ["node", "index.js"]

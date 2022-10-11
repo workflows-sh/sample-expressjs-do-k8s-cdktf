@@ -1,5 +1,4 @@
 .DS_Store
 .dockerignore
-Dockerfile
 README.md
 ./img/index.png

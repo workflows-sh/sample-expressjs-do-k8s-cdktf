@@ -1,6 +1,6 @@
 version: "1"
 services:
-  - name: sample-expressjs-service-do-k8s-cdktf:0.1.2
+  - name: sample-expressjs-service-do-k8s-cdktf:0.1.4
     description: Preview of image built by the pipeline
     run: node /ops/index.js
     port: [ '8080:8080' ]
@@ -8,22 +8,15 @@ services:
     env:
       static:
         - PORT=8080
-        - DB_HOST=localhost
-        - DB_PORT=3600
-        - DB_USER=fake
-      secrets:
-        - SLACK_SIGNING_SECRET
-        - SLACK_BOT_TOKEN
     events:
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
-      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.reopened"
-      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.synchronize"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
     trigger:
       - build
       - publish
       - start
 pipelines:
-  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.2.1
+  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.2.2
     description: Build and Publish an image in a DigitalOcean Container Registry
     env:
       static:
@@ -38,8 +31,7 @@ pipelines:
         - DO_TOKEN
     events:
       - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.opened"
-      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.reopened"
-      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.synchronize"
+      - "github:workflows-sh/sample-expressjs-do-k8s-cdktf:pull_request.merged"
     jobs:
       - name: sample-expressjs-build-do-k8s-cdktf
         description: Build step for sample-expressjs-do-k8s-cdktf
@@ -63,5 +55,5 @@ pipelines:
           - doctl registry login
           - CLEAN_REF=$(echo "${REF}" | sed 's/[^a-zA-Z0-9]/-/g' )
           - docker build -f Dockerfile -t one-img-to-rule-them-all:latest .
-          - docker tag one-img-to-rule-them-all:latest registry.digitalocean.com/$ORG/$REPO:$REF
-          - docker push registry.digitalocean.com/$ORG/$REPO:$REF
+          - docker tag one-img-to-rule-them-all:latest registry.digitalocean.com/$ORG/$REPO:$CLEAN_REF
+          - docker push registry.digitalocean.com/$ORG/$REPO:$CLEAN_REF
