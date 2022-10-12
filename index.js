@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3000
 const HOST = '0.0.0.0'
 
 // Update RELEASE_NO below for Demos
-const RELEASE_NO = 'PROD-2022-206'
+const RELEASE_NO = 'PROD-2022-207'
 
 const api = express()
 api.set('views', path.join(__dirname, 'views'));
