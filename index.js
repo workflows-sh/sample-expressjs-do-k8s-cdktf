@@ -4,12 +4,14 @@ var path = require('path');
 const PORT = process.env.PORT || 3000
 const HOST = '0.0.0.0'
 
-// Update RELEASE_NO below for Demos
-const RELEASE_NO = 'PROD-200'
+// !* Edit here for demos
+const RELEASE_NO = 'PROD-165'
 
 const api = express()
+
 api.set('views', path.join(__dirname, 'views'));
 api.set('view engine', 'pug');
+
 api.use(express.static(path.join(__dirname, 'public')));
 
 api.get('/', (req, res) => {
