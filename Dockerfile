@@ -10,4 +10,4 @@ RUN npm install
 
 ADD . .
 
-ENTRYPOINT node index.js
+ENTRYPOINT node /ops/index.js
