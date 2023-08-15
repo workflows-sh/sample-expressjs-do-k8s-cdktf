@@ -45,8 +45,9 @@ pipelines:
 services:
   - name: sample-expressjs-service-do-k8s-cdktf:0.1.6
     description: Preview of image built by the pipeline
-    run: node /ops/index.js
+    run: node index.js
     port: [ '8080:8080' ]
+    sdk: 1
     domain: ""
     env:
       static:
