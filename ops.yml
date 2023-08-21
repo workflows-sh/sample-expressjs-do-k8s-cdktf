@@ -47,6 +47,7 @@ services:
     description: Preview of image built by the pipeline
     run: node /ops/index.js
     port: [ '8080:8080' ]
+    sdk: off
     domain: ""
     env:
       static:
