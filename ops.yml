@@ -1,6 +1,6 @@
 version: "1"
 pipelines:
-  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.2.4
+  - name: sample-expressjs-pipeline-do-k8s-cdktf:0.2.5
     description: Build and Publish an image in a DigitalOcean Container Registry
     env:
       static:
@@ -34,7 +34,8 @@ pipelines:
           - tar xf doctl.tar.gz -C $BIN_LOCATION
           - doctl version
           - git version
-          - git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/$GH_ORG/$REPO && cd $REPO
+          - git clone https://oauth2:$GITHUB_TOKEN@github.com/$GH_ORG/$REPO
+          - cd $REPO && ls -asl
           - git fetch -a && git checkout "${REF}"
           - doctl auth init -t $DO_TOKEN
           - doctl registry login
